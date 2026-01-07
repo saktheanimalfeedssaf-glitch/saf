@@ -48,7 +48,22 @@
           <a class="btn ghost" href="tel:918012522705">Call +91-8012522705</a>
         </div>
 
+        
         <div class="grid cards" style="margin-top:16px">
+          <div class="card">
+            <h3>🏭 <span class="count" data-to="1998">0</span></h3>
+            <p>Year of Establishment</p>
+          </div>
+          <div class="card">
+            <h3>✅ Manufacturer</h3>
+            <p>Nature of Business</p>
+          </div>
+          <div class="card">
+            <h3>👥 <span class="count" data-to="25">0</span>+</h3>
+            <p>Total Employees (11–25)</p>
+          </div>
+        </div>
+<div class="grid cards" style="margin-top:16px">
           <div class="card"><h3>Quality Checked</h3><p>Products are checked before final dispatch for purity &amp; quality.</p></div>
           <div class="card"><h3>Modern Infrastructure</h3><p>Well-equipped unit with timely upgrades to meet customer needs.</p></div>
           <div class="card"><h3>HDPE Packaging</h3><p>Strong HDPE bags in 20 / 50 / 70 Kg sizes for safe handling.</p></div>
@@ -147,6 +162,26 @@
         </div>
       </section>
 
+      <section class="section" id="testimonials">
+        <div class="panel hero">
+          <div class="section-title">
+            <h2>What Farmers Say</h2>
+            <div class="hint">Trusted since 1998</div>
+          </div>
+
+          <div class="t-wrap">
+            <button class="t-btn" id="tPrev" aria-label="Previous testimonial">‹</button>
+
+            <div class="t-card" id="tCard">
+              <div class="t-quote">“Milk yield improved and digestion is better. Consistent pellet quality.”</div>
+              <div class="t-meta">— Dairy Farmer, Erode</div>
+            </div>
+
+            <button class="t-btn" id="tNext" aria-label="Next testimonial">›</button>
+          </div>
+        </div>
+      </section>
+
       <section class="section" id="contact">
         <div class="panel hero">
           <h2>Contact Us</h2>
@@ -179,11 +214,91 @@
     </div>
   </footer>
 
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  
 <div class="fab" aria-label="Quick actions">
   <a href="https://wa.me/918012522705?text=Hello%20Sakthe%20Animal%20Feeds%2C%20I%20need%20a%20quotation." target="_blank" rel="noopener">💬 <span>WhatsApp</span> <small>Quick Enquiry</small></a>
   <a href="tel:918012522705">📞 <span>Call</span> <small>+91-8012522705</small></a>
   <a href="https://maps.app.goo.gl/atUoE2uayiHjk83p6" target="_blank">📍 <span>Location</span> <small>Directions</small></a>
 </div>
+
+  <script>
+    // Footer year
+    (function(){
+      const y = document.getElementById('y');
+      if(y) y.textContent = new Date().getFullYear();
+    })();
+
+    // Parallax hero background (top hero)
+    (function(){
+      const hero = document.querySelector('.panel.hero');
+      if(!hero) return;
+      window.addEventListener('scroll', ()=>{
+        const y = window.scrollY * 0.18;
+        hero.style.backgroundPosition = `center calc(50% + ${y}px)`;
+      }, {passive:true});
+    })();
+
+    // Counter animation (when visible)
+    (function(){
+      const counters = document.querySelectorAll('.count');
+      if(!counters.length) return;
+
+      const animate = (el) => {
+        const to = parseInt(el.getAttribute('data-to'),10);
+        const duration = 900;
+        const t0 = performance.now();
+
+        function tick(t){
+          const p = Math.min(1, (t - t0) / duration);
+          const s = p*p*(3-2*p); // smoothstep
+          el.textContent = Math.floor(to * s);
+          if(p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      };
+
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            animate(e.target);
+            io.unobserve(e.target);
+          }
+        });
+      }, {threshold:0.5});
+
+      counters.forEach(c=>io.observe(c));
+    })();
+
+    // Testimonials slider
+    (function(){
+      const card = document.getElementById('tCard');
+      const prev = document.getElementById('tPrev');
+      const next = document.getElementById('tNext');
+      if(!card || !prev || !next) return;
+
+      const data = [
+        {q:'Milk yield improved and digestion is better. Consistent pellet quality.', m:'— Dairy Farmer, Erode'},
+        {q:'Good packaging and timely supply. Animals stay active and healthy.', m:'— Farm Owner, Gobichettipalayam'},
+        {q:'Best results with Supreme and Silver. Very consistent feed.', m:'— Milk Producer, Tamil Nadu'}
+      ];
+      let i = 0;
+
+      function render(){
+        card.style.opacity = 0;
+        card.style.transform = 'translateY(4px)';
+        setTimeout(()=>{
+          card.innerHTML = `<div class="t-quote">“${data[i].q}”</div><div class="t-meta">${data[i].m}</div>`;
+          card.style.opacity = 1;
+          card.style.transform = 'translateY(0px)';
+        }, 180);
+      }
+
+      prev.addEventListener('click', ()=>{ i = (i - 1 + data.length) % data.length; render(); });
+      next.addEventListener('click', ()=>{ i = (i + 1) % data.length; render(); });
+
+      setInterval(()=>{ i = (i + 1) % data.length; render(); }, 4500);
+    })();
+  </script>
+
 </body>
 </html>
